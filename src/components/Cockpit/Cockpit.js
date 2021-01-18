@@ -1,4 +1,5 @@
 import cssClasses from "./Cockpit.modules.css";
+import lifeCycleImg from "../../assets/lifecycle_hooks.jpeg";
 
 const cockpit = (props) => {
   let buttonClass = "";
@@ -17,6 +18,12 @@ const cockpit = (props) => {
   return (
     <div className={cssClasses.Cockpit}>
       <h1>{props.appTitle}</h1>
+      <img
+        src={lifeCycleImg}
+        alt="Life Cycle Hooks On Class Component"
+        height="400"
+        width="800"
+      />
       <p className={assignClasses.join(" ")}>React is working</p>
 
       <button className={buttonClass} onClick={props.clicked}>
