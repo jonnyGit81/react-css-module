@@ -4,6 +4,36 @@ import Persons from "../components/Persons/Persons";
 import Cockpit from "../components/Cockpit/Cockpit";
 
 class App extends Component {
+  constructor(props) {
+    console.log("[App.js] constructor, Next is to getDerivedStateFromProps");
+    super(props);
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    console.log(
+      "[App.js] getDerivedStateFromProps, Next is to Render ",
+      props,
+      state
+    );
+    return state;
+  }
+
+  //executed only once time
+  componentDidMount() {
+    console.log(
+      "[App.js] componentDidMount, Code your side effect code here, e.g HTTP CALL, next To componentDidUpdate "
+    );
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log("[App.js] shouldComponentUpdate, next to Render");
+    return true;
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log("[App.js] componentDidUpdate, Code your side effect code here, e.g HTTP CALL");
+  }
+
   state = {
     persons: [
       { id: "anyID1", name: "Johnny", age: 28 },
@@ -60,6 +90,9 @@ class App extends Component {
   };
 
   render() {
+    console.log(
+      "[App.js] render, Next is to Render all child, and next is to componentDidMount"
+    );
     let personsJSX = null;
 
     if (this.state.showPersons) {
