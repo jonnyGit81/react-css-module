@@ -1,19 +1,30 @@
-import cssClasses from "./Cockpit.modules.css";
-import lifeCycleImg from "../../assets/lifecycle_hooks.jpeg";
-import lifeCycleUpodate from "../../assets/lifecycle_update.jpeg";
-import React, { useEffect } from "react";
-import { render } from "react-dom";
+import cssClasses from './Cockpit.module.css';
+import lifeCycleImg from '../../assets/lifecycle_hooks.jpeg';
+import lifeCycleUpodate from '../../assets/lifecycle_update.jpeg';
+import React, { useEffect, useRef, useContext } from 'react';
+import { render } from 'react-dom';
+
+import AuthContext from '../../auth-context/auth-context';
 
 const Cockpit = (props) => {
   //this is react hook, for functional lifecycle
   // (componentDidMount and componentDidUpdate combined into useEffect)
+
+  //using reactHook ref.
+  const toggleButtonRef = useRef(null);
+
+  //using reactHook useContext
+  // react automatically make a connection for you
+  const context = useContext(AuthContext);
+
+  console.log(context.authenticated);
 
   // useEffect on first time rendered and based on persons change
   useEffect(
     (effect) => {
       // this useEffect most second important lifecycle for function component
       //this will printed any action on the page, since any changes in App.js is calling Cockpit.
-      console.log("[Cockpit.js] useEffect second arguments [props.persons]");
+      console.log('[Cockpit.js] useEffect second arguments [props.persons]');
       // you can use HTTP Request Here, since this is called every time and any changes on App.js
 
       //so this is triggered every time component rendered, what if you want to only call HTTP request
@@ -26,21 +37,21 @@ const Cockpit = (props) => {
       // you can use more than 1 use Effect.
       setTimeout(() => {
         console.log(
-          "second arguments [props.persons] " +
-            " fetch some data from cloud!! or save some data to the cloud " +
-            "=> this message will printed if only the persons data has change, to every re-render cycle" +
-            "but of course the first render this useEffect will get executed, the rest are waiting persons data changed"
+          'second arguments [props.persons] ' +
+            ' fetch some data from cloud!! or save some data to the cloud ' +
+            '=> this message will printed if only the persons data has change, to every re-render cycle' +
+            'but of course the first render this useEffect will get executed, the rest are waiting persons data changed',
         );
       }, 1000);
 
       return () =>
         console.log(
-          "[Cockpit.js] cleaning up, on component are REMOVED or PERSONS CHANGED " +
-            " because second argument is array [props.persons]" +
-            "REMEMBER FIRST CYCLE RENDER WOULD NOT TRIGGERED HERE"
+          '[Cockpit.js] cleaning up, on component are REMOVED or PERSONS CHANGED ' +
+            ' because second argument is array [props.persons]' +
+            'REMEMBER FIRST CYCLE RENDER WOULD NOT TRIGGERED HERE',
         );
     },
-    [props.persons]
+    [props.persons],
   );
 
   // useEffect on first time rendered only
@@ -48,35 +59,38 @@ const Cockpit = (props) => {
   useEffect(
     (effect) => {
       console.log(
-        "[Cockpit.js] useEffect first time rendered second arguments [] "
+        '[Cockpit.js] useEffect first time rendered second arguments [] ',
       );
+
+      //first time render click toogle button by using reactHook ref
+      toggleButtonRef.current.click();
 
       // for cleaningUp componentWillUnmount
       // you can just simply add return a function statement
       return () =>
         console.log(
-          "[Cockpit.js] cleaning up, on component are removed ONLY " +
-            " because second argument is empty array [] " +
-            "REMEMBER FIRST CYCLE RENDER WOULD NOT TRIGGERED HERE"
+          '[Cockpit.js] cleaning up, on component are removed ONLY ' +
+            ' because second argument is empty array [] ' +
+            'REMEMBER FIRST CYCLE RENDER WOULD NOT TRIGGERED HERE',
         );
     },
-    [] //for tell react to use useEffect first time rendered only then you can simply pass empty array
+    [], //for tell react to use useEffect first time rendered only then you can simply pass empty array
   );
 
   useEffect(() => {
     console.log(
-      "[Cockpit.js] useEffect without second arguments, this will get executed every render cycle "
+      '[Cockpit.js] useEffect without second arguments, this will get executed every render cycle ',
     );
 
     return () =>
       console.log(
-        "[Cockpit.js] cleaning up, every render cycle " +
-          " because there is no second argument " +
-          " REMEMBER => this clean up is executed before the console log of useEffect executed." +
-          " AND AS Always first render would not triggering this cleanup"
+        '[Cockpit.js] cleaning up, every render cycle ' +
+          ' because there is no second argument ' +
+          ' REMEMBER => this clean up is executed before the console log of useEffect executed.' +
+          ' AND AS Always first render would not triggering this cleanup',
       );
   });
-  let buttonClass = "";
+  let buttonClass = '';
   if (props.showPersons) {
     buttonClass = cssClasses.Red;
   }
@@ -160,11 +174,34 @@ const Cockpit = (props) => {
         height="400"
         width="800"
       />
-      <p className={assignClasses.join(" ")}>React is working</p>
+      <p className={assignClasses.join(' ')}>React is working</p>
 
-      <button className={buttonClass} onClick={props.clicked}>
+      <button
+        // we set the ref here
+        ref={toggleButtonRef}
+        className={buttonClass}
+        onClick={props.clicked}
+      >
         Show Persons
       </button>
+
+      {/* Here we use from context and not from props. see the context defined in App.js */}
+      {/* <AuthContext.Consumer>
+        {(context) =>
+          context.authenticated ? (
+            <button onClick={context.logout}>Logout</button>
+          ) : (
+            <button onClick={context.login}>Login</button>
+          )
+        }
+      </AuthContext.Consumer> */}
+
+      {/* as an alternative for functional component can use reactHook useContext. */}
+      {context.authenticated ? (
+        <button onClick={context.logout}>Logout</button>
+      ) : (
+        <button onClick={context.login}>Login</button>
+      )}
     </div>
   );
 };

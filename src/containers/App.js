@@ -1,7 +1,12 @@
-import cssClasses from './App.css';
+import cssClasses from './App.module.css';
 import React, { Component } from 'react';
 import Persons from '../components/Persons/Persons';
 import Cockpit from '../components/Cockpit/Cockpit';
+
+import withClass2 from '../components/hoc/WIthClass2';
+import Aux from '../components/hoc/Aux';
+
+import AuthContext from '../auth-context/auth-context';
 
 class App extends Component {
   constructor(props) {
@@ -47,6 +52,8 @@ class App extends Component {
     othersState: 'this value wont impact, since we only update persons state',
     showPersons: false,
     showCockpit: true,
+    changeCounter: 0,
+    isAuthenticated: false,
   };
 
   switchNameHandler = (id) => {
@@ -78,8 +85,13 @@ class App extends Component {
     const persons = [...this.state.persons];
     persons[findPersonIndex] = person;
 
-    this.setState({
-      persons: persons,
+    // if you have to update state depend on previous state, please do this as the best practice
+    // example the counter of change
+    this.setState((prevState, props) => {
+      return {
+        persons: persons,
+        changeCounter: prevState.changeCounter + 1,
+      };
     });
   };
 
@@ -92,6 +104,14 @@ class App extends Component {
     const persons = [...this.state.persons]; //this will create new array.
     persons.splice(deletedIndex, 1);
     this.setState({ persons: persons });
+  };
+
+  dummyLoginHandler = () => {
+    this.setState({ isAuthenticated: true });
+  };
+
+  dummyLogoutHandler = () => {
+    this.setState({ isAuthenticated: false });
   };
 
   render() {
@@ -112,17 +132,8 @@ class App extends Component {
     }
 
     return (
-      <div className={cssClasses.App}>
-        {this.state.showCockpit ? (
-          <Cockpit
-            appTitle={this.props.appTitle}
-            personsLength={this.state.persons.length}
-            clicked={this.toggleShowPersonHandler}
-            showPersons={this.state.showPersons}
-          />
-        ) : null}
-
-        <br />
+      // <div className={cssClasses.App}>
+      <Aux>
         <button
           onClick={() =>
             this.setState({ showCockpit: !this.state.showCockpit })
@@ -132,10 +143,36 @@ class App extends Component {
         </button>
 
         <br />
-        {personsJSX}
-      </div>
+        <br />
+
+        {/* here we use react context to pass context to any component we want */}
+        <AuthContext.Provider
+          value={{
+            authenticated: this.state.isAuthenticated,
+            login: this.dummyLoginHandler,
+            logout: this.dummyLogoutHandler,
+          }}
+        >
+          {this.state.showCockpit ? (
+            <Cockpit
+              appTitle={this.props.appTitle}
+              personsLength={this.state.persons.length}
+              clicked={this.toggleShowPersonHandler}
+              showPersons={this.state.showPersons}
+            />
+          ) : null}
+          {personsJSX}
+        </AuthContext.Provider>
+      </Aux>
+      // </div>
     );
   }
 }
 
-export default App;
+// this higher component are can be used such as java script code handled error, or send google analytic ect
+// can add html, javascript logic, or style
+export default withClass2(App, cssClasses.App);
+
+// using prop-types
+// npm install --save prop-types
+// this is for prevent passing invalid type to the props

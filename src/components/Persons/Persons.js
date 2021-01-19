@@ -2,6 +2,8 @@ import { Component, PureComponent } from 'react';
 //import { Component, PureComponent } from 'react';
 import Person from './Person/Person';
 
+import PropTypes from 'prop-types';
+
 // if at the shouldComponentUpdate you want to compare all the props changed
 // then you can straightly using PureConponent
 // instead need to add code to shouldComponentUpdate like this
@@ -63,5 +65,19 @@ class Persons extends Component {
     });
   }
 }
+
+// using prop-types
+// npm install --save prop-types
+// this is for prevent passing invalid type to the props
+// you will see the error/warning in browser inspect if the value passing props are incorrect type
+Persons.PropTypes = {
+  click: PropTypes.func,
+  key: PropTypes.string,
+  name: PropTypes.string,
+  age: PropTypes.number,
+  click: PropTypes.func,
+  changed: PropTypes.func,
+  switchName: PropTypes.func,
+};
 
 export default Persons;
