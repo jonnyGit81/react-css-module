@@ -1,13 +1,20 @@
-import { Component } from "react";
-import Person from "./Person/Person";
+import { Component, PureComponent } from 'react';
+//import { Component, PureComponent } from 'react';
+import Person from './Person/Person';
 
+// if at the shouldComponentUpdate you want to compare all the props changed
+// then you can straightly using PureConponent
+// instead need to add code to shouldComponentUpdate like this
+// if (nextProps.persons !== this.props.Persons || nextProps.clicked !== this.props.clicked || nextProps.changed !== this.props.changed) {
+// }
+//class Persons extends PureConponent {
 class Persons extends Component {
   // static getDerivedStateFromProps(props, state) {
   //   return state;
   // }
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log("[Persons.js] shouldComponentUpdate");
+    console.log('[Persons.js] shouldComponentUpdate');
     // remember here is only comparing the pointer address.
     // hence with that, please take note, change something to persons in App.js
     // are creating new array instead of directly update the value of the property.
@@ -21,27 +28,27 @@ class Persons extends Component {
   }
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
-    console.log("[Persons.js] getSnapshotBeforeUpdate");
+    console.log('[Persons.js] getSnapshotBeforeUpdate');
     return {
       message:
-        "Test Do Something, which is this will get in componentDidUpdate",
+        'Test Do Something, which is this will get in componentDidUpdate',
     };
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    console.log("[Persons.js] componentDidUpdate");
+    console.log('[Persons.js] componentDidUpdate');
     console.log(snapshot);
   }
 
   componentWillUnmount() {
     console.log(
-      "[Persons.js] componentWillUnmount, " +
-        "use this for cleaning up stuff, like cleaning connection or what" +
-        "this will be executed once the component is removed"
+      '[Persons.js] componentWillUnmount, ' +
+        'use this for cleaning up stuff, like cleaning connection or what' +
+        'this will be executed once the component is removed',
     );
   }
   render() {
-    console.log("[Persons.js] render");
+    console.log('[Persons.js] render');
     return this.props.persons.map((person, index) => {
       return (
         <Person
