@@ -8,7 +8,16 @@ class Persons extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     console.log("[Persons.js] shouldComponentUpdate");
-    return true; //used to check to allowed to update component or not
+    // remember here is only comparing the pointer address.
+    // hence with that, please take note, change something to persons in App.js
+    // are creating new array instead of directly update the value of the property.
+    // you must do this.
+    if (nextProps.persons !== this.props.Persons) {
+      return true;
+    } else {
+      return false;
+    }
+    //return true; //used to check to allowed to update component or not
   }
 
   getSnapshotBeforeUpdate(prevProps, prevState) {
@@ -24,6 +33,13 @@ class Persons extends Component {
     console.log(snapshot);
   }
 
+  componentWillUnmount() {
+    console.log(
+      "[Persons.js] componentWillUnmount, " +
+        "use this for cleaning up stuff, like cleaning connection or what" +
+        "this will be executed once the component is removed"
+    );
+  }
   render() {
     console.log("[Persons.js] render");
     return this.props.persons.map((person, index) => {

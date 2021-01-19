@@ -1,19 +1,19 @@
-import cssClasses from "./App.css";
-import React, { Component } from "react";
-import Persons from "../components/Persons/Persons";
-import Cockpit from "../components/Cockpit/Cockpit";
+import cssClasses from './App.css';
+import React, { Component } from 'react';
+import Persons from '../components/Persons/Persons';
+import Cockpit from '../components/Cockpit/Cockpit';
 
 class App extends Component {
   constructor(props) {
-    console.log("[App.js] constructor, Next is to getDerivedStateFromProps");
+    console.log('[App.js] constructor, Next is to getDerivedStateFromProps');
     super(props);
   }
 
   static getDerivedStateFromProps(props, state) {
     console.log(
-      "[App.js] getDerivedStateFromProps, Next is to Render ",
+      '[App.js] getDerivedStateFromProps, Next is to Render ',
       props,
-      state
+      state,
     );
     return state;
   }
@@ -21,27 +21,32 @@ class App extends Component {
   //executed only once time
   componentDidMount() {
     console.log(
-      "[App.js] componentDidMount, Code your side effect code here, e.g HTTP CALL, next To componentDidUpdate "
+      '[App.js] componentDidMount, Code your side effect code here, e.g HTTP CALL, next To componentDidUpdate ',
     );
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log("[App.js] shouldComponentUpdate, next to Render");
+    console.log(
+      '[App.js] shouldComponentUpdate, Executed before, we can cancel update here. next to Render',
+    );
     return true;
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    console.log("[App.js] componentDidUpdate, Code your side effect code here, e.g HTTP CALL");
+    console.log(
+      '[App.js] componentDidUpdate, Code your side effect code here, e.g HTTP CALL',
+    );
   }
 
   state = {
     persons: [
-      { id: "anyID1", name: "Johnny", age: 28 },
-      { id: "anyID2", name: "Billy", age: 29 },
-      { id: "anyID3", name: "Jimmy", age: 30 },
+      { id: 'anyID1', name: 'Johnny', age: 28 },
+      { id: 'anyID2', name: 'Billy', age: 29 },
+      { id: 'anyID3', name: 'Jimmy', age: 30 },
     ],
-    othersState: "this value wont impact, since we only update persons state",
+    othersState: 'this value wont impact, since we only update persons state',
     showPersons: false,
+    showCockpit: true,
   };
 
   switchNameHandler = (id) => {
@@ -60,7 +65,7 @@ class App extends Component {
 
   textOnChangeHandler = (event, searchId) => {
     const findPersonIndex = this.state.persons.findIndex(
-      (person) => person.id === searchId
+      (person) => person.id === searchId,
     );
 
     //best practice to always using spread operator, for preventing mutable.
@@ -91,7 +96,7 @@ class App extends Component {
 
   render() {
     console.log(
-      "[App.js] render, Next is to Render all child, and next is to componentDidMount"
+      '[App.js] render, Next is to Render all child, and next is to componentDidMount',
     );
     let personsJSX = null;
 
@@ -108,12 +113,25 @@ class App extends Component {
 
     return (
       <div className={cssClasses.App}>
-        <Cockpit
-          appTitle={this.props.appTitle}
-          persons={this.state.persons}
-          clicked={this.toggleShowPersonHandler}
-          showPersons={this.state.showPersons}
-        />
+        {this.state.showCockpit ? (
+          <Cockpit
+            appTitle={this.props.appTitle}
+            personsLength={this.state.persons.length}
+            clicked={this.toggleShowPersonHandler}
+            showPersons={this.state.showPersons}
+          />
+        ) : null}
+
+        <br />
+        <button
+          onClick={() =>
+            this.setState({ showCockpit: !this.state.showCockpit })
+          }
+        >
+          Test UseEffect Cockpit Cleaning UP
+        </button>
+
+        <br />
         {personsJSX}
       </div>
     );
